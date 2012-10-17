@@ -79,8 +79,40 @@ int main (int ac, char *av [])
     X_rootwin     *rootwin;
     int           ev, xp, yp, xs, ys;
     char          *nsm_url;
+    char          program_name [32] = PROGNAME;
+    char          state_file [1024] ="";
+    bool          managed = false;
 
-    xresman.init (&ac, av, CP PROGNAME, options, NOPTS);
+    nsm_url = getenv("NSM_URL");
+
+    if (nsm_url)
+    {
+        nsm = new NSM_Client;
+        if (!nsm->init(nsm_url))
+        {
+            nsm->announce("zita-rev1", ":dirty:", av[0]);
+            do
+            {
+                nsm->check ();
+                usleep(10);
+                managed = nsm->is_active();
+            } while (!nsm->is_active());
+            do
+            {
+                nsm->check ();
+                usleep(10);
+            } while (!nsm->client_id());
+            sprintf(program_name, "%s", nsm->client_id ());
+            sprintf(state_file, "%s.conf", nsm->client_path ());
+        }
+        else
+        {
+            delete nsm;
+            nsm = NULL;
+        }
+    }
+
+    xresman.init (&ac, av, CP program_name, options, NOPTS);
     if (xresman.getb (".help", 0)) help ();
             
     display = new X_display (xresman.get (".display", 0));
@@ -108,21 +140,15 @@ int main (int ac, char *av [])
     XFlush (display->dpy ());
     ITC_ctrl::connect (jclient, EV_EXIT, mainwin, EV_EXIT);
 
-    nsm_url = getenv("NSM_URL");
-
-    if(nsm_url) {
-        nsm = new NSM_Client;
-
-        if(!nsm->init(nsm_url))
-            nsm->announce("zita-rev1", ":switch:dirty:", av[0]);
-        else {
-            delete nsm;
-            nsm = NULL;
-        }
-    }
-
     if (mlockall (MCL_CURRENT | MCL_FUTURE)) fprintf (stderr, "Warning: memory lock failed.\n");
     signal (SIGINT, sigint_handler); 
+
+    mainwin->set_managed (managed);
+    if (managed)
+    {
+        mainwin->set_statefile (state_file);
+        mainwin->load_state ();
+    }
 
     do
     {
@@ -145,7 +171,8 @@ int main (int ac, char *av [])
     delete handler;
     delete rootwin;
     delete display;
-   
+    if (nsm) delete nsm;
+
     return 0;
 }
 

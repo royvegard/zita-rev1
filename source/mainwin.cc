@@ -35,7 +35,8 @@ Mainwin::Mainwin (X_rootwin *parent, X_resman *xres, int xp, int yp, Jclient *jc
     _stop (false),
     _xres (xres),
     _jclient (jclient),
-    _dirty (false)
+    _dirty (false),
+    _managed (false)
 {
     X_hints     H;
     char        s [256];
@@ -234,15 +235,17 @@ void Mainwin::redraw (void)
     else        XPutImage (dpy (), win (), dgc (), mixsect_img, 0, 0, x, 0, 70, 75);
     x += 70;
     XPutImage (dpy (), win (), dgc (), redzita_img, 0, 0,   x, 0, 35, 75);
-    x += 10;
-    XPutImage (dpy (), win (), dgc (), sm_img,      0, 0,   x, 60, 19, 10);
+    if (_managed)
+    {
+        x += 10;
+        XPutImage (dpy (), win (), dgc (), sm_img,      0, 0,   x, 60, 19, 10);
+    }
 }
 
 
-void Mainwin::load_state (const char *name)
+void Mainwin::load_state ()
 {
     FILE * File;
-    sprintf(_statefile, "%s.conf", name);
     File = fopen (_statefile, "r");
 
     if (File != NULL)
