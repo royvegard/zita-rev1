@@ -41,7 +41,10 @@ public:
     Mainwin& operator=(const Mainwin&);
 
     void stop (void) { _stop = true; }
-    int process (void); 
+    int process (void);
+    void load_state (const char *name);
+    void save_state (void);
+    void set_managed (bool);
 
 private:
 
@@ -65,6 +68,9 @@ private:
     X_resman       *_xres;
     Jclient        *_jclient;
     RotaryCtl      *_rotary [NROTARY];
+    char            _statefile [1024];
+    bool            _dirty;
+    bool            _managed;
 };
 
 

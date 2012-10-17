@@ -28,6 +28,7 @@
 #include "styles.h"
 #include "jclient.h"
 #include "mainwin.h"
+#include "nsm.h"
 
 
 #define NOPTS 4
@@ -45,7 +46,8 @@ XrmOptionDescRec options [NOPTS] =
 
 
 static Jclient  *jclient = 0;
-static Mainwin  *mainwin = 0;
+Mainwin  *mainwin = 0;
+NSM_Client *nsm = 0;
 
 
 static void help (void)
@@ -76,6 +78,7 @@ int main (int ac, char *av [])
     X_handler     *handler;
     X_rootwin     *rootwin;
     int           ev, xp, yp, xs, ys;
+    char          *nsm_url;
 
     xresman.init (&ac, av, CP PROGNAME, options, NOPTS);
     if (xresman.getb (".help", 0)) help ();
@@ -83,9 +86,9 @@ int main (int ac, char *av [])
     display = new X_display (xresman.get (".display", 0));
     if (display->dpy () == 0)
     {
-	fprintf (stderr, "Can't open display.\n");
+        fprintf (stderr, "Can't open display.\n");
         delete display;
-	return 1;
+        return 1;
     }
 
     xp = yp = 100;
@@ -96,7 +99,7 @@ int main (int ac, char *av [])
     styles_init (display, &xresman);
     jclient = new Jclient (xresman.rname (),
                            xresman.get (".server", 0),
- 	                   xresman.getb (".ambisonic", false));
+                            xresman.getb (".ambisonic", false));
     rootwin = new X_rootwin (display);
     mainwin = new Mainwin (rootwin, &xresman, xp, yp, jclient);
     rootwin->handle_event ();
@@ -105,23 +108,37 @@ int main (int ac, char *av [])
     XFlush (display->dpy ());
     ITC_ctrl::connect (jclient, EV_EXIT, mainwin, EV_EXIT);
 
+    nsm_url = getenv("NSM_URL");
+
+    if(nsm_url) {
+        nsm = new NSM_Client;
+
+        if(!nsm->init(nsm_url))
+            nsm->announce("zita-rev1", ":switch:dirty:", av[0]);
+        else {
+            delete nsm;
+            nsm = NULL;
+        }
+    }
+
     if (mlockall (MCL_CURRENT | MCL_FUTURE)) fprintf (stderr, "Warning: memory lock failed.\n");
     signal (SIGINT, sigint_handler); 
 
     do
     {
-	ev = mainwin->process ();
-	if (ev == EV_X11)
-	{
-	    rootwin->handle_event ();
-	    handler->next_event ();
-	}
-	if (ev == Esync::EV_TIME)
-	{
-	    handler->next_event ();
-	}
+        ev = mainwin->process ();
+        if (ev == EV_X11)
+        {
+            rootwin->handle_event ();
+            handler->next_event ();
+        }
+        if (ev == Esync::EV_TIME)
+        {
+            handler->next_event ();
+        }
+        if (nsm) nsm->check ();
     }
-    while (ev != EV_EXIT);	
+    while (ev != EV_EXIT);
 
     styles_fini (display);
     delete jclient;

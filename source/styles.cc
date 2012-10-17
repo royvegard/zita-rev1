@@ -31,6 +31,7 @@ XImage    *eq2sect_img;
 XImage    *mixsect_img;
 XImage    *ambsect_img;
 XImage    *redzita_img;
+XImage    *sm_img;
 
 RotaryImg  r_delay_img;
 RotaryImg  r_xover_img;
@@ -51,12 +52,13 @@ void styles_init (X_display *disp, X_resman *xrm)
     revsect_img = png2img (SHARED"/revsect.png", disp, XftColors [C_MAIN_BG]);
     eq1sect_img = png2img (SHARED"/eq1sect.png", disp, XftColors [C_MAIN_BG]);
     eq2sect_img = png2img (SHARED"/eq2sect.png", disp, XftColors [C_MAIN_BG]);
-    mixsect_img = png2img (SHARED"/mixsect.png", disp, XftColors [C_MAIN_BG]); 
-    ambsect_img = png2img (SHARED"/ambsect.png", disp, XftColors [C_MAIN_BG]); 
-    redzita_img = png2img (SHARED"/redzita.png", disp, XftColors [C_MAIN_BG]); 
+    mixsect_img = png2img (SHARED"/mixsect.png", disp, XftColors [C_MAIN_BG]);
+    ambsect_img = png2img (SHARED"/ambsect.png", disp, XftColors [C_MAIN_BG]);
+    redzita_img = png2img (SHARED"/redzita.png", disp, XftColors [C_MAIN_BG]);
+    sm_img      = png2img (SHARED"/sm.png",      disp, XftColors [C_MAIN_BG]);
 
     if    (!revsect_img || !mixsect_img || !ambsect_img
-        || !eq1sect_img || !eq2sect_img || !redzita_img)
+        || !eq1sect_img || !eq2sect_img || !redzita_img || !sm_img)
     {
 	fprintf (stderr, "Can't load images from '%s'.\n", SHARED);
 	exit (1);
@@ -177,4 +179,5 @@ void styles_fini (X_display *disp)
     XDestroyImage (eq1sect_img);
     XDestroyImage (eq2sect_img);
     XDestroyImage (redzita_img);
+    XDestroyImage (sm_img);
 }

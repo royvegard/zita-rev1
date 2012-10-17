@@ -54,6 +54,7 @@ extern XImage    *eq2sect_img;
 extern XImage    *mixsect_img;
 extern XImage    *ambsect_img;
 extern XImage    *redzita_img;
+extern XImage    *sm_img;
 
 extern RotaryImg  r_delay_img;
 extern RotaryImg  r_xover_img;

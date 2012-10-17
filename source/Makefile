@@ -31,9 +31,9 @@ CPPFLAGS += -march=native
 
 all:	zita-rev1
 
-ZITA-REV1_O = zita-rev1.o styles.o jclient.o mainwin.o png2img.o guiclass.o rotary.o reverb.o pareq.o
+ZITA-REV1_O = zita-rev1.o styles.o jclient.o mainwin.o png2img.o guiclass.o rotary.o reverb.o pareq.o nsm.o nsmclient.o
 zita-rev1:	CPPFLAGS += -I/usr/X11R6/include `freetype-config --cflags`
-zita-rev1:	LDLIBS += -lcairo -lclxclient -lclthreads -ljack -lpng -lXft -lX11 -lrt
+zita-rev1:	LDLIBS += -lcairo -lclxclient -lclthreads -ljack -lpng -lXft -lX11 -lrt -llo -lpthread
 zita-rev1:	LDFLAGS += -pthread
 zita-rev1:	LDFLAGS += -L/usr/X11R6/lib
 zita-rev1:	$(ZITA-REV1_O) 
