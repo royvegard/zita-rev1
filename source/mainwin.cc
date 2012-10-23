@@ -262,8 +262,9 @@ void Mainwin::load_state ()
         float eq1gn = 0.0f;
         float eq2fr = 0.0f;
         float eq2gn = 0.0f;
+        int xp, yp;
 
-        fscanf (File, "%s %f %s %f %s %f %s %f %s %f %s %f %s %f %s %f %s %f %s %f %s %f",
+        fscanf (File, "%s %f %s %f %s %f %s %f %s %f %s %f %s %f %s %f %s %f %s %f %s %f %s %d %s %d",
                 parameter, &delay,
                 parameter, &xover,
                 parameter, &rtlow,
@@ -274,7 +275,9 @@ void Mainwin::load_state ()
                 parameter, &eq1fr,
                 parameter, &eq1gn,
                 parameter, &eq2fr,
-                parameter, &eq2gn);
+                parameter, &eq2gn,
+                parameter, &xp,
+                parameter, &yp);
         fclose (File);
 
         _rotary [R_DELAY]->set_value (delay);
@@ -282,21 +285,22 @@ void Mainwin::load_state ()
         _rotary [R_XOVER]->set_value (xover);
         _jclient->reverb ()->set_xover (_rotary [R_XOVER]->value ());
         _rotary [R_RTLOW]->set_value (rtlow);
-        _jclient->reverb ()->set_xover (_rotary [R_RTLOW]->value ());
+        _jclient->reverb ()->set_rtlow (_rotary [R_RTLOW]->value ());
         _rotary [R_RTMID]->set_value (rtmid);
-        _jclient->reverb ()->set_xover (_rotary [R_RTMID]->value ());
+        _jclient->reverb ()->set_rtmid (_rotary [R_RTMID]->value ());
         _rotary [R_FDAMP]->set_value (fdamp);
-        _jclient->reverb ()->set_xover (_rotary [R_FDAMP]->value ());
+        _jclient->reverb ()->set_fdamp (_rotary [R_FDAMP]->value ());
         _rotary [R_OPMIX]->set_value (opmix);
-        _jclient->reverb ()->set_xover (_rotary [R_OPMIX]->value ());
+        _jclient->reverb ()->set_opmix (_rotary [R_OPMIX]->value ());
         _rotary [R_RGXYZ]->set_value (rgxyz);
-        _jclient->reverb ()->set_xover (_rotary [R_RGXYZ]->value ());
+        _jclient->reverb ()->set_rgxyz (_rotary [R_RGXYZ]->value ());
         _rotary [R_EQ1FR]->set_value (eq1fr);
         _rotary [R_EQ1GN]->set_value (eq1gn);
         _jclient->reverb ()->set_eq1 (_rotary [R_EQ1FR]->value (), _rotary [R_EQ1GN]->value ());
         _rotary [R_EQ2FR]->set_value (eq2fr);
         _rotary [R_EQ2GN]->set_value (eq2gn);
         _jclient->reverb ()->set_eq2 (_rotary [R_EQ2FR]->value (), _rotary [R_EQ2GN]->value ());
+        x_move (xp, yp);
         redraw ();
     }
 }
@@ -321,9 +325,27 @@ void Mainwin::save_state (void)
         float eq2fr = _rotary [R_EQ2FR]->value ();
         float eq2gn = _rotary [R_EQ2GN]->value ();
 
-        fprintf (File, "delay %f\nxover %f\nrtlow %f\nrtmid %f\nfdamp %f\nopmix %f\nrgxyz %f\neq1fr %f\neq1gn %f\neq2fr %f\neq2gn %f\n",
-                 delay, xover, rtlow, rtmid, fdamp, opmix, rgxyz, eq1fr, eq1gn, eq2fr, eq2gn);
+        fprintf (File, "/reverb/delay\t%f\n/reverb/xover\t%f\n", delay, xover);
+        fprintf (File, "/reverb/rtlow\t%f\n/reverb/rtmid\t%f\n", rtlow, rtmid);
+        fprintf (File, "/reverb/fdamp\t%f\n/reverb/opmix\t%f\n", fdamp, opmix);
+        fprintf (File, "/reverb/rgxyz\t%f\n/reverb/eq1fr\t%f\n", rgxyz, eq1fr);
+        fprintf (File, "/reverb/eq1gn\t%f\n/reverb/eq2fr\t%f\n", eq1gn, eq2fr);
+        fprintf (File, "/reverb/eq2gn\t%f\n", eq2gn);
 
+        Window w_return;
+        int x_s, y_s, x, y;
+        unsigned int w, h;
+        unsigned int b_w;
+        unsigned int d;
+        XGetGeometry (dpy (), win (), &w_return, &x, &y, &w, &h, &b_w, &d);
+
+        printf("x: %d y: %d w: %d h: %d\n", x, y, w, h);
+
+        XTranslateCoordinates (dpy (), win (), pwin ()->win (),
+                               -x, -y, &x_s, &y_s, &w_return);
+        printf("x_s: %d y_s: %d\n", x_s, y_s);
+
+        fprintf(File, "/window/x\t%d\n/window/y\t%d\n", x_s, y_s);
         fclose (File);
         _dirty = false;
         if (nsm) nsm->is_clean();
