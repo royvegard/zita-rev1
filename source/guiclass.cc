@@ -28,11 +28,11 @@ Rlinctl::Rlinctl (X_window   *parent,
                   RotaryImg  *image,
                   int        xp,
                   int        yp,
-		  int        cm,
-		  int        dd,
+                  int        cm,
+                  int        dd,
                   double     vmin,
-	          double     vmax,
-	          double     vini,
+                  double     vmax,
+                  double     vini,
                   int        cbind) :
 RotaryCtl (parent, cbobj, image, xp, yp, cbind),
 _cm (cm),
@@ -79,9 +79,9 @@ int Rlinctl::set_count (int u)
     if (u > _cm) u = _cm;
     if (u != _count)
     {
-	_count = u;
-	_value = _vmin + u * (_vmax - _vmin) / _cm;
-	_angle = 270.0 * ((double) u / _cm - 0.5);
+        _count = u;
+        _value = _vmin + u * (_vmax - _vmin) / _cm;
+        _angle = 270.0 * ((double) u / _cm - 0.5);
         return DELTA;
     }
     return 0;
@@ -94,11 +94,11 @@ Rlogctl::Rlogctl (X_window   *parent,
                   RotaryImg  *image,
                   int        xp,
                   int        yp,
-		  int        cm,
-		  int        dd,
+                  int        cm,
+                  int        dd,
                   double     vmin,
-	          double     vmax,
-	          double     vini,
+                  double     vmax,
+                  double     vini,
                   int        cbind) :
 RotaryCtl (parent, cbobj, image, xp, yp, cbind),
 _cm (cm),
@@ -145,9 +145,9 @@ int Rlogctl::set_count (int u)
     if (u > _cm) u = _cm;
     if (u != _count)
     {
-	_count = u;
-	_value = exp (_vmin + u * (_vmax - _vmin) / _cm);
-	_angle = 270.0 * ((double) u / _cm - 0.5);
+        _count = u;
+        _value = exp (_vmin + u * (_vmax - _vmin) / _cm);
+        _angle = 270.0 * ((double) u / _cm - 0.5);
         return DELTA;
     }
     return 0;

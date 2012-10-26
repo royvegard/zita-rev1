@@ -38,15 +38,15 @@ public:
     void setfsamp (float fsamp);
     void setparam (float f, float g)
     {
-	_f0 = f;
-	_g0 = powf (10.0f, 0.05f * g);
-	_touch0++;
+        _f0 = f;
+        _g0 = powf (10.0f, 0.05f * g);
+        _touch0++;
     }
     void reset (void);
     void prepare (int nsamp);
     void process (int nsamp, int nchan, float *data[])
     {
-	if (_state != BYPASS) process1 (nsamp, nchan, data);
+        if (_state != BYPASS) process1 (nsamp, nchan, data);
     }
 
 private:

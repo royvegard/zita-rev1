@@ -40,7 +40,7 @@ int RotaryCtl::_ry = 0;
 RotaryCtl::RotaryCtl (X_window     *parent,
                       X_callback   *cbobj,
                       RotaryImg    *image,
-		      int  xp,
+                      int  xp,
                       int  yp,
                       int  cbind) :
 
@@ -85,23 +85,23 @@ void RotaryCtl::handle_event (XEvent *E)
     switch (E->type)
     {
     case Expose:
-	render ();
-	break;  
+        render ();
+        break;
  
     case ButtonPress:
-	bpress ((XButtonEvent *) E);
-	break;  
+        bpress ((XButtonEvent *) E);
+        break;
 
     case ButtonRelease:
-	brelse ((XButtonEvent *) E);
-	break;
+        brelse ((XButtonEvent *) E);
+        break;
 
     case MotionNotify:
-	motion ((XMotionEvent *) E);
-	break;
+        motion ((XMotionEvent *) E);
+        break;
 
-    default: 
-	fprintf (stderr, "RotaryCtl: event %d\n", E->type );
+    default:
+        fprintf (stderr, "RotaryCtl: event %d\n", E->type );
     }
 }
 
@@ -116,11 +116,11 @@ void RotaryCtl::bpress (XButtonEvent *E)
     _keymod  = E->state;
     if (E->button < 4)
     {
-	_rx = E->x;
-	_ry = E->y;
-	_button = E->button;
+        _rx = E->x;
+        _ry = E->y;
+        _button = E->button;
         r = handle_button ();
-	_rcount = _count;
+        _rcount = _count;
     }
     else if (_button) return;
     else if ((int)E->button == _wb_up)
@@ -134,7 +134,7 @@ void RotaryCtl::bpress (XButtonEvent *E)
     if (r)
     {
         callback (r);
-	render ();
+        render ();
     }
 }
 
@@ -143,8 +143,8 @@ void RotaryCtl::brelse (XButtonEvent *E)
 {
     if (_button == (int)E->button)
     {
-	_button = 0;
-	callback (RELSE);
+        _button = 0;
+        callback (RELSE);
     }
 }
 
@@ -159,18 +159,18 @@ void RotaryCtl::motion (XMotionEvent *E)
         dx = E->x - _rx;
         dy = E->y - _ry;
         r = handle_motion (dx, dy);
-	if (r)
-	{
+        if (r)
+        {
             callback (r);
-	    render ();
-	}
+            render ();
+        }
     }
 }
 
 
 void RotaryCtl::set_state (int s)
 {
-    _state = s;	
+    _state = s;
     render ();
 }
 

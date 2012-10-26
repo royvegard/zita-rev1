@@ -60,8 +60,8 @@ void styles_init (X_display *disp, X_resman *xrm)
     if    (!revsect_img || !mixsect_img || !ambsect_img
         || !eq1sect_img || !eq2sect_img || !redzita_img || !sm_img)
     {
-	fprintf (stderr, "Can't load images from '%s'.\n", SHARED);
-	exit (1);
+        fprintf (stderr, "Can't load images from '%s'.\n", SHARED);
+        exit (1);
     }
 
     r_delay_img._backg = XftColors [C_MAIN_BG];

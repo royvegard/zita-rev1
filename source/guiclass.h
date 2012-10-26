@@ -35,11 +35,11 @@ public:
              RotaryImg  *image,
              int        xp,
              int        yp,
-	     int        cm,
-	     int        dd,
+             int        cm,
+             int        dd,
              double     vmin,
-	     double     vmax,
-	     double     vini,
+             double     vmax,
+             double     vini,
              int        cbind = 0);
 
     virtual void set_value (double v);
@@ -67,13 +67,13 @@ public:
     Rlogctl (X_window   *parent,
              X_callback *cbobj,
              RotaryImg  *image,
- 	     int        xp,
+             int        xp,
              int        yp,
-	     int        cm,
-	     int        dd,
+             int        cm,
+             int        dd,
              double     vmin,
-	     double     vmax,
-	     double     vini,
+             double     vmax,
+             double     vini,
              int        cbind = 0);
 
     virtual void set_value (double v);

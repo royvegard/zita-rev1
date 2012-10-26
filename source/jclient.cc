@@ -126,17 +126,17 @@ int Jclient::jack_process (int frames)
 
     while (frames)
     {
-	if (!_nsamp)
-	{
-	    _reverb.prepare (_fragm);
-	    _nsamp = _fragm;
-	}
-	k = (_nsamp < frames) ? _nsamp : frames;
+        if (!_nsamp)
+        {
+            _reverb.prepare (_fragm);
+            _nsamp = _fragm;
+        }
+        k = (_nsamp < frames) ? _nsamp : frames;
         _reverb.process (k, inp, out);
         for (i = 0; i < n_inp; i++) inp [i] += k;
         for (i = 0; i < n_out; i++) out [i] += k;
-	frames -= k;
-	_nsamp -= k;
+        frames -= k;
+        _nsamp -= k;
     }
 
 

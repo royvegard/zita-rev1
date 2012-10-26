@@ -20,7 +20,7 @@
 
 
 #ifndef __ROTARY_H
-#define	__ROTARY_H
+#define        __ROTARY_H
 
 
 #include <cairo/cairo.h>
@@ -53,7 +53,7 @@ public:
     RotaryCtl (X_window    *parent,
                X_callback  *cbobj,
                RotaryImg   *image,
-	       int xp, int yp,
+               int xp, int yp,
                int cbind = 0);
 
     virtual ~RotaryCtl (void);

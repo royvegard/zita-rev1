@@ -142,13 +142,13 @@ void Filt1::set_params (float del, float tmf, float tlo, float wlo, float thi, f
 
     _gmf = powf (0.001f, del / tmf);
     _glo = powf (0.001f, del / tlo) / _gmf - 1.0f;
-    _wlo = wlo;    
+    _wlo = wlo;
     g = powf (0.001f, del / thi) / _gmf;
     t = (1 - g * g) / (2 * g * g * chi);
-    _whi = (sqrtf (1 + 4 * t) - 1) / (2 * t); 
+    _whi = (sqrtf (1 + 4 * t) - 1) / (2 * t);
 } 
 
- 
+
 // -----------------------------------------------------------------------
 
 
@@ -217,8 +217,8 @@ void Reverb::init (float fsamp, bool ambis)
     _vdelay1.init ((int)(0.1f * _fsamp));
     for (i = 0; i < 8; i++)
     {
-	k1 = (int)(floorf (_tdiff1 [i] * _fsamp + 0.5f));
-	k2 = (int)(floorf (_tdelay [i] * _fsamp + 0.5f));
+        k1 = (int)(floorf (_tdiff1 [i] * _fsamp + 0.5f));
+        k2 = (int)(floorf (_tdelay [i] * _fsamp + 0.5f));
         _diff1 [i].init (k1, (i & 1) ? -0.6f : 0.6f);
         _delay [i].init (k2 - k1);
     }
@@ -255,27 +255,27 @@ void Reverb::prepare (int nfram)
     if (b != _cntB2)
     {
          wlo = 6.2832f * _xover / _fsamp;
-	 if (_fdamp > 0.49f * _fsamp) chi = 2;
-	 else chi = 1 - cosf (6.2832f * _fdamp / _fsamp);
+         if (_fdamp > 0.49f * _fsamp) chi = 2;
+         else chi = 1 - cosf (6.2832f * _fdamp / _fsamp);
          for (i = 0; i < 8; i++)
-	 {
+         {
              _filt1 [i].set_params (_tdelay [i], _rtmid, _rtlow, wlo, 0.5f * _rtmid, chi);
-	 }
+         }
          _cntB2 = b;
     }
 
     if (c != _cntC2)
     {
-	if (_ambis)
-	{
-	    t0 = 1.0f / sqrtf (_rtmid);
-	    t1 = t0 * powf (10.0f, 0.05f * _rgxyz);
-	}
-	else
-	{
-	    t0 = (1 - _opmix) * (1 + _opmix);
-	    t1 = 0.7f * _opmix * (2 - _opmix) / sqrtf (_rtmid);
-	}
+        if (_ambis)
+        {
+            t0 = 1.0f / sqrtf (_rtmid);
+            t1 = t0 * powf (10.0f, 0.05f * _rgxyz);
+        }
+        else
+        {
+            t0 = (1 - _opmix) * (1 + _opmix);
+            t1 = 0.7f * _opmix * (2 - _opmix) / sqrtf (_rtmid);
+        }
         _d0 = (t0 - _g0) / nfram;
         _d1 = (t1 - _g1) / nfram;
         _cntC2 = c;
@@ -287,7 +287,7 @@ void Reverb::prepare (int nfram)
 
 
 void Reverb::process (int nfram, float *inp [], float *out [])
-{	
+{
     int   i, n;
     float *p0, *p1;
     float *q0, *q1, *q2, *q3;
@@ -304,19 +304,19 @@ void Reverb::process (int nfram, float *inp [], float *out [])
 
     for (i = 0; i < nfram; i++)
     {
-	_vdelay0.write (p0 [i]);
-	_vdelay1.write (p1 [i]);
+        _vdelay0.write (p0 [i]);
+        _vdelay1.write (p1 [i]);
 
- 	t = 0.3f * _vdelay0.read ();
-	x0 = _diff1 [0].process (_delay [0].read () + t);
-	x1 = _diff1 [1].process (_delay [1].read () + t);
-	x2 = _diff1 [2].process (_delay [2].read () - t);
-	x3 = _diff1 [3].process (_delay [3].read () - t);
- 	t = 0.3f * _vdelay1.read ();
-	x4 = _diff1 [4].process (_delay [4].read () + t);
-	x5 = _diff1 [5].process (_delay [5].read () + t);
-	x6 = _diff1 [6].process (_delay [6].read () - t);
-	x7 = _diff1 [7].process (_delay [7].read () - t);
+         t = 0.3f * _vdelay0.read ();
+        x0 = _diff1 [0].process (_delay [0].read () + t);
+        x1 = _diff1 [1].process (_delay [1].read () + t);
+        x2 = _diff1 [2].process (_delay [2].read () - t);
+        x3 = _diff1 [3].process (_delay [3].read () - t);
+         t = 0.3f * _vdelay1.read ();
+        x4 = _diff1 [4].process (_delay [4].read () + t);
+        x5 = _diff1 [5].process (_delay [5].read () + t);
+        x6 = _diff1 [6].process (_delay [6].read () - t);
+        x7 = _diff1 [7].process (_delay [7].read () - t);
 
         t = x0 - x1; x0 += x1;  x1 = t;
         t = x2 - x3; x2 += x3;  x3 = t;
@@ -331,25 +331,25 @@ void Reverb::process (int nfram, float *inp [], float *out [])
         t = x2 - x6; x2 += x6;  x6 = t;
         t = x3 - x7; x3 += x7;  x7 = t;
 
-	if (_ambis)
-	{
+        if (_ambis)
+        {
             _g0 += _d0;
             _g1 += _d1;
-	    q0 [i] = _g0 * x0;
-	    q1 [i] = _g1 * x1;
-	    q2 [i] = _g1 * x4;
-	    q3 [i] = _g1 * x2;
-	}
-	else
-	{
+            q0 [i] = _g0 * x0;
+            q1 [i] = _g1 * x1;
+            q2 [i] = _g1 * x4;
+            q3 [i] = _g1 * x2;
+        }
+        else
+        {
             _g1 += _d1;
-	    q0 [i] = _g1 * (x1 + x2);
-	    q1 [i] = _g1 * (x1 - x2);
-	}
+            q0 [i] = _g1 * (x1 + x2);
+            q1 [i] = _g1 * (x1 - x2);
+        }
 
-	_delay [0].write (_filt1 [0].process (g * x0));
-	_delay [1].write (_filt1 [1].process (g * x1));
-	_delay [2].write (_filt1 [2].process (g * x2));
+        _delay [0].write (_filt1 [0].process (g * x0));
+        _delay [1].write (_filt1 [1].process (g * x1));
+        _delay [2].write (_filt1 [2].process (g * x2));
         _delay [3].write (_filt1 [3].process (g * x3));
         _delay [4].write (_filt1 [4].process (g * x4));
         _delay [5].write (_filt1 [5].process (g * x5));
@@ -362,12 +362,12 @@ void Reverb::process (int nfram, float *inp [], float *out [])
     _pareq2.process (nfram, n, out);
     if (!_ambis)
     {
-	for (i = 0; i < nfram; i++)
-	{
-	    _g0 += _d0;
-	    q0 [i] += _g0 * p0 [i];
-	    q1 [i] += _g0 * p1 [i];
-	}
+        for (i = 0; i < nfram; i++)
+        {
+            _g0 += _d0;
+            q0 [i] += _g0 * p0 [i];
+            q1 [i] += _g0 * p1 [i];
+        }
     }
 }
 

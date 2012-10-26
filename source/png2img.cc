@@ -38,36 +38,36 @@ XImage *png2img (const char *file, X_display *disp, XftColor *bgnd)
     F = fopen (file, "r");
     if (!F)
     {
-	fprintf (stderr, "Can't open '%s'\n", file);
-	return 0;
+        fprintf (stderr, "Can't open '%s'\n", file);
+        return 0;
     }
     fread (hdr, 1, 8, F);
     if (png_sig_cmp (hdr, 0, 8))
     {
-	fprintf (stderr, "'%s' is not a PNG file\n", file);
-	return 0;
+        fprintf (stderr, "'%s' is not a PNG file\n", file);
+        return 0;
     }
     fseek (F, 0, SEEK_SET);
 
     png_ptr = png_create_read_struct (PNG_LIBPNG_VER_STRING, 0, 0, 0);
     if (! png_ptr)
     {
-	fclose (F);
-	return 0;
+        fclose (F);
+        return 0;
     }
     png_info = png_create_info_struct (png_ptr);
     if (! png_info)
     {
         png_destroy_read_struct (&png_ptr, 0, 0);
-	fclose (F);
+        fclose (F);
         return 0;
     }
     if (setjmp (png_jmpbuf (png_ptr)))
     {
         png_destroy_read_struct (&png_ptr, &png_info, 0);
         fclose (F);
-	fprintf (stderr, "png:longjmp()\n");
-	return 0;
+        fprintf (stderr, "png:longjmp()\n");
+        return 0;
     }
 
     png_init_io (png_ptr, F);
@@ -111,16 +111,16 @@ XImage *png2img (const char *file, X_display *disp, XftColor *bgnd)
 
     for (y = 0; y < dy; y++)
     {
-	p = data [y];
+        p = data [y];
         for (x = 0; x < dx; x++)
-	{
-	    va = (dp == 4) ? (p [3] / 255.0f) : 1;
-	    pix = ((unsigned long)((p [0] * va + (1 - va) * br) * vr) & mr) 
+        {
+            va = (dp == 4) ? (p [3] / 255.0f) : 1;
+            pix = ((unsigned long)((p [0] * va + (1 - va) * br) * vr) & mr)
                 | ((unsigned long)((p [1] * va + (1 - va) * bg) * vg) & mg)
                 | ((unsigned long)((p [2] * va + (1 - va) * bb) * vb) & mb);
-	    XPutPixel (image, x, y, pix);
-	    p += dp;
-	}
+            XPutPixel (image, x, y, pix);
+            p += dp;
+        }
     }
 
     png_destroy_read_struct (&png_ptr, &png_info, 0);
