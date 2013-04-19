@@ -47,12 +47,14 @@ install:	all
 	install -d $(DESTDIR)$(BINDIR)
 	install -d $(DESTDIR)$(SHARED)
 	install -m 755 zita-rev1 $(DESTDIR)$(BINDIR)
+	ln -s $(DESTDIR)$(BINDIR)/zita-rev1 $(DESTDIR)$(BINDIR)/zita-rev1-amb
 	rm -rf $(DESTDIR)$(SHARED)/*
 	install -m 644 ../share/* $(DESTDIR)$(SHARED)
 
 
 uninstall:
 	rm -f  $(DESTDIR)$(BINDIR)/zita-rev1
+	rm -f  $(DESTDIR)$(BINDIR)/zita-rev1-amb
 	rm -rf $(DESTDIR)$(SHARED)
 
 
