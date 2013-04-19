@@ -82,6 +82,7 @@ int main (int ac, char *av [])
     char          program_name [32] = PROGNAME;
     char          state_file [1024] ="";
     bool          managed = false;
+    bool          ambisonic = false;
 
     nsm_url = getenv("NSM_URL");
 
@@ -90,7 +91,7 @@ int main (int ac, char *av [])
         nsm = new NSM_Client;
         if (!nsm->init(nsm_url))
         {
-            nsm->announce("zita-rev1", ":dirty:", av[0]);
+            nsm->announce(av[0], ":dirty:", av[0]);
             do
             {
                 nsm->check ();
@@ -112,7 +113,7 @@ int main (int ac, char *av [])
         }
     }
 
-    xresman.init (&ac, av, CP program_name, options, NOPTS);
+    xresman.init (&ac, av, CP PROGNAME, options, NOPTS);
     if (xresman.getb (".help", 0)) help ();
             
     display = new X_display (xresman.get (".display", 0));
@@ -129,11 +130,27 @@ int main (int ac, char *av [])
     xresman.geometry (".geometry", display->xsize (), display->ysize (), 1, xp, yp, xs, ys);
 
     styles_init (display, &xresman);
-    jclient = new Jclient (xresman.rname (),
-                           xresman.get (".server", 0),
-                            xresman.getb (".ambisonic", false));
+
+    if (strcmp(av[0], "zita-rev1-amb") == 0)
+    {
+        ambisonic = true;
+    }
+
+    if (managed)
+    {
+        jclient = new Jclient (program_name,
+                               xresman.get (".server", 0),
+                                xresman.getb (".ambisonic", ambisonic));
+    }
+    else
+    {
+        jclient = new Jclient (xresman.rname (),
+                               xresman.get (".server", 0),
+                                xresman.getb (".ambisonic", ambisonic));
+    }
+
     rootwin = new X_rootwin (display);
-    mainwin = new Mainwin (rootwin, &xresman, xp, yp, jclient);
+    mainwin = new Mainwin (rootwin, &xresman, xp, yp, jclient, xresman.getb (".ambisonic", ambisonic));
     rootwin->handle_event ();
     handler = new X_handler (display, mainwin, EV_X11);
     handler->next_event ();

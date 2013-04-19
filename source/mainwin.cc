@@ -29,7 +29,7 @@
 
 extern NSM_Client *nsm;
 
-Mainwin::Mainwin (X_rootwin *parent, X_resman *xres, int xp, int yp, Jclient *jclient) :
+Mainwin::Mainwin (X_rootwin *parent, X_resman *xres, int xp, int yp, Jclient *jclient, bool force_ambis) :
     A_thread ("Main"),
     X_window (parent, xp, yp, XSIZE, YSIZE, XftColors [C_MAIN_BG]->pixel),
     _stop (false),
@@ -55,7 +55,7 @@ Mainwin::Mainwin (X_rootwin *parent, X_resman *xres, int xp, int yp, Jclient *jc
     H.rclas (xres->rclas ());
     x_apply (&H); 
 
-    _ambis = xres->getb (".ambisonic", false);
+    _ambis = xres->getb (".ambisonic", force_ambis);
     RotaryCtl::init (disp ());
     x = 0;
     _rotary [R_DELAY] = new Rlinctl (this, this, &r_delay_img, x, 0, 160, 5,  0.02,  0.100,  0.04, R_DELAY);
@@ -337,13 +337,10 @@ void Mainwin::save_state (void)
         unsigned int w, h;
         unsigned int b_w;
         unsigned int d;
+
         XGetGeometry (dpy (), win (), &w_return, &x, &y, &w, &h, &b_w, &d);
-
-        printf("x: %d y: %d w: %d h: %d\n", x, y, w, h);
-
         XTranslateCoordinates (dpy (), win (), pwin ()->win (),
                                -x, -y, &x_s, &y_s, &w_return);
-        printf("x_s: %d y_s: %d\n", x_s, y_s);
 
         fprintf(File, "/window/x\t%d\n/window/y\t%d\n", x_s, y_s);
         fclose (File);

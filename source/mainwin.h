@@ -35,7 +35,7 @@ public:
 
     enum { XSIZE = 640, YSIZE = 75 };
 
-    Mainwin (X_rootwin *parent, X_resman *xres, int xp, int yp, Jclient *jclient);
+    Mainwin (X_rootwin *parent, X_resman *xres, int xp, int yp, Jclient *jclient, bool force_ambis = false);
     ~Mainwin (void);
     Mainwin (const Mainwin&);
     Mainwin& operator=(const Mainwin&);
